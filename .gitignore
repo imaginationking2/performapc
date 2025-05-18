@@ -1,0 +1,12 @@
+# Ignore Python virtual environment
+scraping_env/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.DS_Store
+.ipynb_checkpoints/
+.env
