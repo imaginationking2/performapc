@@ -38,8 +38,8 @@ def normalize_file(file_path: Path):
         )
 
         df["source_file"] = file_path.name
-        df["date"] = pd.to_datetime(df["date"], errors="coerce")
-        df["VendorKey"] = df["source_file"].str.replace(".csv", "", regex=False).str.extract(r"(^.*?)(_20\\d{2}-\\d{2}-\\d{2})?$")[0]
+        df["date"] = pd.to_datetime(date.today())  # Ensure date is today's date
+        df["VendorKey"] = df["source_file"].str.replace(".csv", "", regex=False).str.extract(r"(^.*?)(_20\d{2}-\d{2}-\d{2})?$")[0]
 
         return df
 
@@ -56,15 +56,19 @@ def run_normalization():
         if not df.empty:
             all_data.append(df)
 
-            # Save each file to archive
-            archive_path = ARCHIVE_DIR / f"normalized_daily_{date.today().isoformat()}.csv"
-            df.to_csv(archive_path, index=False)
-
     if all_data:
         combined = pd.concat(all_data, ignore_index=True).drop_duplicates()
+        
+        # ✅ Save date-stamped archive
+        today_str = date.today().isoformat()
+        archive_path = ARCHIVE_DIR / f"normalized_daily_{today_str}.csv"
+        combined.to_csv(archive_path, index=False)
+        
+        # ✅ Optionally also save combined output to exports folder
         OUTPUT_FILE = EXPORT_DIR / "normalized_combined.csv"
         combined.to_csv(OUTPUT_FILE, index=False)
-        print(f"\n✅ Normalized and saved to {OUTPUT_FILE}")
+
+        print(f"\n✅ Normalized and saved to:\n - {archive_path}\n - {OUTPUT_FILE}")
     else:
         print("⚠️ No data to normalize.")
 

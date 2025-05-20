@@ -3,55 +3,55 @@ from bs4 import BeautifulSoup
 from datetime import date
 import csv
 import time
+import random
 from pathlib import Path
 
 BASE_URL = "https://laifai.ae"
 CATEGORY_URL = f"{BASE_URL}/product-category/vga-card/"
+
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    "User-Agent": random.choice([
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15",
+        "Mozilla/5.0 (X11; Linux x86_64) Gecko/20100101 Firefox/121.0",
+    ]),
+    "Accept-Language": "en-US,en;q=0.9",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Connection": "keep-alive"
 }
 
-def scrape_page(url):
-    try:
-        res = requests.get(url, headers=HEADERS)
-        soup = BeautifulSoup(res.content, "html.parser")
-        return soup.find_all("div", class_="product-outer")
-    except Exception as e:
-        print(f"❌ Error fetching {url} — {e}")
-        return []
+def get_soup(url, retries=3):
+    for attempt in range(retries):
+        try:
+            response = requests.get(url, headers=HEADERS, timeout=10)
+            if response.status_code == 200:
+                return BeautifulSoup(response.content, "html.parser")
+            elif response.status_code == 404:
+                return None
+            elif response.status_code == 429:
+                wait = random.uniform(5, 10)
+                print(f"🔄 Rate limited. Waiting {wait:.1f}s before retry...")
+                time.sleep(wait)
+        except requests.RequestException as e:
+            print(f"⚠️ Connection error: {e}. Retrying...")
+            time.sleep(2)
+    return None
 
 def parse_product(product):
     try:
-        name_tag = product.select_one("h2.woocommerce-loop-product__title a")
-        if not name_tag:
-            return None
-        name = name_tag.text.strip()
-        url = name_tag["href"]
+        title_tag = product.select_one("h2.woocommerce-loop-product__title")
+        title = title_tag.text.strip() if title_tag else "Unknown"
 
-        price_box = product.select_one("span.price")
-        if not price_box:
-            return None
+        product_link_tag = product.select_one("a.woocommerce-LoopProduct-link")
+        url = product_link_tag["href"].strip() if product_link_tag else ""
 
-        final_price_tag = price_box.select_one("ins span.woocommerce-Price-amount")
-        base_price_tag = price_box.select_one("del span.woocommerce-Price-amount")
-        single_price_tag = price_box.select_one("span.woocommerce-Price-amount")
-
-        if final_price_tag:
-            final_price = final_price_tag.text.replace("AED", "").replace(",", "").strip()
-        elif single_price_tag:
-            final_price = single_price_tag.text.replace("AED", "").replace(",", "").strip()
-        else:
-            final_price = "0"
-
-        if base_price_tag:
-            base_price = base_price_tag.text.replace("AED", "").replace(",", "").strip()
-        else:
-            base_price = final_price
+        price_tag = product.select_one("span.price bdi")
+        final_price = price_tag.text.replace("AED", "").replace(",", "").strip() if price_tag else "0"
 
         return {
             "Date": date.today().isoformat(),
-            "Product Name": name,
-            "Base Price (AED)": base_price,
+            "Product Name": title,
+            "Base Price (AED)": final_price,
             "Final Price (AED)": final_price,
             "Discount": "",
             "Stock Status": "In stock",
@@ -68,11 +68,17 @@ def scrape(export_dir: Path):
     page = 1
 
     while True:
-        url = f"{CATEGORY_URL}" if page == 1 else f"{CATEGORY_URL}page/{page}/"
+        url = CATEGORY_URL if page == 1 else f"{CATEGORY_URL}page/{page}/"
         print(f"🔄 Scraping page {page}: {url}")
-        products = scrape_page(url)
+        soup = get_soup(url)
+
+        if soup is None:
+            print("✅ Reached non-existent page or blocked. Ending scrape.")
+            break
+
+        products = soup.find_all("div", class_="product-outer")
         if not products:
-            print("✅ No more products found.")
+            print("✅ No products found. Ending scrape.")
             break
 
         for product in products:
@@ -81,7 +87,9 @@ def scrape(export_dir: Path):
                 product_data.append(item)
 
         page += 1
-        time.sleep(1.5)
+        delay = random.uniform(1.5, 3.5)
+        print(f"⏳ Waiting {delay:.2f}s before next page...")
+        time.sleep(delay)
 
     if product_data:
         export_dir.mkdir(exist_ok=True)
