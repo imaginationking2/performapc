@@ -102,41 +102,114 @@ elif page == "HYTE Case Tracker":
 elif page == "Daily Insights":
     st.title("🆕 Daily Market Insights")
 
-    dates = sorted(df["date"].dropna().unique())
-    today = st.selectbox("Select date to analyze", reversed(dates))
-    past = st.selectbox("Compare against date", reversed(dates))
+    # Date range selection
+    st.markdown("### 📅 Analysis Period")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        from_date = st.date_input("From Date", df["date"].min().date())
+    with col2:
+        to_date = st.date_input("To Date", df["date"].max().date())
 
-    df_today = df[df["date"] == pd.to_datetime(today)]
-    df_past = df[df["date"] == pd.to_datetime(past)]
+    # Add category filter for out of stock analysis
+    st.markdown("### 📭 Analysis Filters")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        categories = sorted(df["Category"].unique())
+        selected_categories = st.multiselect("Filter by categories", categories, default=categories, key="out_of_stock_categories")
+    
+    with col2:
+        vendors = df["VendorKey"].dropna().unique().tolist()
+        selected_vendors = st.multiselect("Filter by vendors", vendors, default=vendors, key="out_of_stock_vendors")
 
-    new_products = df_today[~df_today["Product Name"].isin(df_past["Product Name"])]
-    restocked = df_today[df_today["Stock Status"].str.lower() != "out of stock"]
-    restocked = restocked[restocked["Product Name"].isin(df_past[df_past["Stock Status"].str.lower() == "out of stock"]["Product Name"])]
+    # Filter data by date range
+    df_from = df[df["date"] >= pd.to_datetime(from_date)]
+    df_to = df[df["date"] <= pd.to_datetime(to_date)]
+    df_range = df[(df["date"] >= pd.to_datetime(from_date)) & (df["date"] <= pd.to_datetime(to_date))]
 
-    delisted = df_past[~df_past["Product Name"].isin(df_today["Product Name"])]
+    # Get earliest and latest data within the range for comparison
+    df_start_period = df[df["date"] == df_range["date"].min()]
+    df_end_period = df[df["date"] == df_range["date"].max()]
 
-    previously_available = df_past[df_past["Stock Status"].str.lower() != "out of stock"]
-    now_unavailable = df_today[df_today["Stock Status"].str.lower() == "out of stock"]
-    went_out_of_stock = now_unavailable[now_unavailable["Product Name"].isin(previously_available["Product Name"])]
+    new_products = df_end_period[~df_end_period["Product Name"].isin(df_start_period["Product Name"])]
+    restocked = df_end_period[df_end_period["Stock Status"].str.lower() != "out of stock"]
+    restocked = restocked[restocked["Product Name"].isin(df_start_period[df_start_period["Stock Status"].str.lower() == "out of stock"]["Product Name"])]
+
+    delisted = df_start_period[~df_start_period["Product Name"].isin(df_end_period["Product Name"])]
+
+    # Collect all products that went out of stock during the entire date range
+    went_out_of_stock_list = []
+    
+    # Get all unique dates in the range, sorted
+    dates_in_range = sorted(df_range["date"].unique())
+    
+    for i in range(1, len(dates_in_range)):
+        current_date = dates_in_range[i]
+        previous_date = dates_in_range[i-1]
+        
+        df_current = df[df["date"] == current_date]
+        df_previous = df[df["date"] == previous_date]
+        
+        # Products that were available yesterday but out of stock today
+        previously_available = df_previous[df_previous["Stock Status"].str.lower() != "out of stock"]
+        now_unavailable = df_current[df_current["Stock Status"].str.lower() == "out of stock"]
+        daily_out_of_stock = now_unavailable[now_unavailable["Product Name"].isin(previously_available["Product Name"])]
+        
+        # Add the date when it went out of stock
+        if not daily_out_of_stock.empty:
+            daily_out_of_stock = daily_out_of_stock.copy()
+            daily_out_of_stock["Went Out of Stock Date"] = current_date
+            went_out_of_stock_list.append(daily_out_of_stock)
+    
+    # Combine all out of stock events
+    if went_out_of_stock_list:
+        went_out_of_stock = pd.concat(went_out_of_stock_list, ignore_index=True)
+        # Remove duplicates (same product might go out of stock multiple times)
+        went_out_of_stock = went_out_of_stock.drop_duplicates(subset=["Product Name", "Source"], keep="first")
+    else:
+        went_out_of_stock = pd.DataFrame()
+    
+    # Apply category and vendor filters to out of stock products
+    if not went_out_of_stock.empty:
+        went_out_of_stock_filtered = went_out_of_stock[
+            (went_out_of_stock["Category"].isin(selected_categories)) &
+            (went_out_of_stock["VendorKey"].isin(selected_vendors))
+        ]
+    else:
+        went_out_of_stock_filtered = pd.DataFrame()
 
     merged = pd.merge(
-        df_today[["Product Name", "Final Price (AED)"]],
-        df_past[["Product Name", "Final Price (AED)"]],
-        on="Product Name", suffixes=("_today", "_past")
+        df_end_period[["Product Name", "Final Price (AED)"]],
+        df_start_period[["Product Name", "Final Price (AED)"]],
+        on="Product Name", suffixes=("_end", "_start")
     )
-    merged["change"] = merged["Final Price (AED)_today"] - merged["Final Price (AED)_past"]
-    top_changes = merged.reindex(columns=["Product Name", "Final Price (AED)_past", "Final Price (AED)_today", "change"])
+    merged["change"] = merged["Final Price (AED)_end"] - merged["Final Price (AED)_start"]
+    top_changes = merged.reindex(columns=["Product Name", "Final Price (AED)_start", "Final Price (AED)_end", "change"])
     top_changes = top_changes.sort_values("change", key=abs, ascending=False).head(3)
 
-    st.subheader("🆕 Newly Added Products")
+    st.subheader(f"🆕 Newly Added Products ({from_date} to {to_date})")
     st.dataframe(new_products)
-    st.subheader("♻️ Restocked Products")
+    st.subheader(f"♻️ Restocked Products ({from_date} to {to_date})")
     st.dataframe(restocked)
-    st.subheader("🗑️ Delisted Products")
+    st.subheader(f"🗑️ Delisted Products ({from_date} to {to_date})")
     st.dataframe(delisted)
-    st.subheader("📭 Went Out of Stock Today")
-    st.dataframe(went_out_of_stock)
-    st.subheader("📉 Top 3 Price Changes Today")
+    st.subheader(f"📭 Went Out of Stock During Period ({len(went_out_of_stock_filtered)} filtered results)")
+    if not went_out_of_stock_filtered.empty:
+        # Reorder columns to show the out of stock date prominently
+        display_columns = ["Went Out of Stock Date", "Product Name", "Final Price (AED)", "Category", "Source", "Stock Status"]
+        available_columns = [col for col in display_columns if col in went_out_of_stock_filtered.columns]
+        st.dataframe(went_out_of_stock_filtered[available_columns])
+    else:
+        st.info("No products went out of stock during the selected period.")
+    
+    # Show summary by category
+    if not went_out_of_stock_filtered.empty:
+        st.markdown("#### 📊 Out of Stock Summary by Category")
+        category_summary = went_out_of_stock_filtered.groupby("Category").size().reset_index(name="Count")
+        st.dataframe(category_summary)
+    
+    st.subheader(f"📉 Top 3 Price Changes ({from_date} to {to_date})")
     st.dataframe(top_changes)
 
 # 4️⃣ Vendor Snapshot
