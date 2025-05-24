@@ -88,15 +88,47 @@ if page == "Product Explorer":
 # 2️⃣ HYTE Case Tracker
 elif page == "HYTE Case Tracker":
     st.title("🖥️ HYTE Case Price Tracker")
+    
+    # Filter to HYTE cases only
     hyte_df = df[(df["Category"] == "Case") & (df["Product Name"].str.contains("HYTE", case=False, na=False))]
-    st.dataframe(hyte_df, use_container_width=True)
 
-    if not hyte_df.empty:
+    # Tag HYTE model
+    def get_hyte_model(name):
+        name = name.lower()
+        if "y40" in name:
+            return "Y40"
+        elif "y70" in name:
+            return "Y70"
+        elif "y60" in name:
+            return "Y60"
+        elif "revolt" in name:
+            return "Revolt"
+        else:
+            return "Other"
+
+    hyte_df["HYTE Model"] = hyte_df["Product Name"].apply(get_hyte_model)
+
+    # Sidebar filters
+    vendors = sorted(hyte_df["VendorKey"].dropna().unique().tolist())
+    models = sorted(hyte_df["HYTE Model"].dropna().unique().tolist())
+
+    selected_vendors = st.multiselect("Select Vendors", vendors, default=vendors)
+    selected_models = st.multiselect("Select HYTE Models", models, default=models)
+
+    # Apply filters
+    hyte_df_filtered = hyte_df[
+        (hyte_df["VendorKey"].isin(selected_vendors)) &
+        (hyte_df["HYTE Model"].isin(selected_models))
+    ].sort_values(by=["date", "Final Price (AED)"], ascending=[False, True])
+
+    st.dataframe(hyte_df_filtered, use_container_width=True)
+
+    if not hyte_df_filtered.empty:
         st.markdown("### 📈 Average Price by Vendor")
-        chart_data = hyte_df.groupby("Source")["Final Price (AED)"].mean().sort_values()
+        chart_data = hyte_df_filtered.groupby("Source")["Final Price (AED)"].mean().sort_values()
         st.bar_chart(chart_data)
     else:
-        st.info("No HYTE cases found.")
+        st.info("No HYTE cases found for selected filters.")
 
 # 3️⃣ Daily Insights
 elif page == "Daily Insights":
