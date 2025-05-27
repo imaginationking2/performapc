@@ -1,0 +1,33 @@
+2025-05-25 16:31:55,158 - CityCenterScraper - INFO - Starting scrape job for https://citycenter.jo/computer-hardware/components-cpu-and-processor
+2025-05-25 16:31:55,158 - CityCenterScraper - INFO - Output will be saved to citycenter_cpus_2025-05-25.csv
+2025-05-25 16:31:55,159 - CityCenterScraper - INFO - Using user agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36
+2025-05-25 16:31:58,408 - CityCenterScraper - INFO - Visiting homepage...
+2025-05-25 16:32:01,282 - CityCenterScraper - INFO - Waiting for 2.30 seconds...
+2025-05-25 16:32:11,723 - CityCenterScraper - INFO - Cookies saved to cookies.json
+2025-05-25 16:32:11,723 - CityCenterScraper - INFO - Navigating to categories page...
+2025-05-25 16:33:11,736 - CityCenterScraper - ERROR - An error occurred: Page.goto: Timeout 60000ms exceeded.
+Call log:
+  - navigating to "https://citycenter.jo/computer-hardware", waiting until "networkidle"
+Traceback (most recent call last):
+  File "D:\ai_scraper\citycenter_cpu.py", line 138, in scrape_with_playwright
+    page.goto(categories_url, wait_until="networkidle")
+  File "D:\ai_scraper\venv\Lib\site-packages\playwright\sync_api\_generated.py", line 9024, in goto
+    self._sync(
+  File "D:\ai_scraper\venv\Lib\site-packages\playwright\_impl\_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "D:\ai_scraper\venv\Lib\site-packages\playwright\_impl\_page.py", line 552, in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai_scraper\venv\Lib\site-packages\playwright\_impl\_frame.py", line 145, in goto
+    await self._channel.send("goto", locals_to_params(locals()))
+  File "D:\ai_scraper\venv\Lib\site-packages\playwright\_impl\_connection.py", line 61, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\ai_scraper\venv\Lib\site-packages\playwright\_impl\_connection.py", line 528, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Page.goto: Timeout 60000ms exceeded.
+Call log:
+  - navigating to "https://citycenter.jo/computer-hardware", waiting until "networkidle"
+
+2025-05-25 16:33:12,166 - CityCenterScraper - INFO - Completed scheduled scraping task. Scraped 0 products.

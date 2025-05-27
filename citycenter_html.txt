@@ -1,0 +1,47 @@
+<div class="tb_products tb_listing tb_grid_view tb_style_bordered tb_product_p_30 tb_buttons_1 tb_buttons_config tb_has_active_description tb_ProductsSystem_YD9pMDOx_classes tb_size_3 tb_gut_30 tb_multiline" data-nth_classes="1">
+    <div class="product-layout clear2 clear3 clear4 clear5 clear6 clear7 clear8 clear9 clear10 clear11 clear12">
+    <input class="product-id_14354" type="hidden" value="">
+    <div class="product-thumb">
+      <div class="image"><a href="https://citycenter.jo/computer-hardware/components-cpu-and-processor/amd-ryzen-9-9950x3d-16-core-4-3ghz-5-7-ghz-max-boost-132mb-cache-am5-desktop-processor-tray"><span style="max-width: 550px;"><span style="padding-top: 72.73%"><img src="https://image.citycenter.jo/cachewebp/catalog/002025/32025/99507420251-550x400.webp" width="550" height="400" alt="AMD RYZEN 9 9950X3D 16-Core 4.3GHz (5.7 GHz Max Boost) 132MB Cache AM5 Desktop Processor , Tray" style="margin-top: -72.73%"></span></span></a></div>      <div>
+        <div class="caption">
+          <h4><a href="https://citycenter.jo/computer-hardware/components-cpu-and-processor/amd-ryzen-9-9950x3d-16-core-4-3ghz-5-7-ghz-max-boost-132mb-cache-am5-desktop-processor-tray">AMD RYZEN 9 9950X3D 16-Core 4.3GHz (5.7 GHz Max Boost) 132MB Cache AM5 Desktop Processor , Tray</a></h4>          
+            <div class="description">
+                AMD Ryzen 9 9950X3D Gaming and Content Creation ProcessorMax. Boost Clock : Up to 5.7 GHz; Base Cloc                </div>          
+                    <p class="price ">
+                        <span class="price-regular"><span class="tb_currency tb_before">JOD</span><span class="tb_integer"> 679</span><span class="tb_decimal_point">.</span><span class="tb_decimal">00</span></span>
+                      </p>                                                </div>
+                
+                
+      </div>
+                </div>
+  </div>    <div class="product-layout">
+    <input class="product-id_13647" type="hidden" value="">
+    <div class="product-thumb">
+      <div class="image"><a href="https://citycenter.jo/computer-hardware/components-cpu-and-processor/amd-ryzen-9-9800x3d-8-core-4-7ghz-5-2-ghz-max-boost-104mb-cache-am5-desktop-processor-tray"><span style="max-width: 550px;"><span style="padding-top: 72.73%"><img src="https://image.citycenter.jo/cachewebp/catalog/002025/12025/9800X3D912025-550x400.webp" width="550" height="400" alt="AMD RYZEN 7 9800X3D 8-Core 4.7GHz (5.2 GHz Max Boost) 104MB Cache AM5 Desktop Processor , Tray" style="margin-top: -72.73%"></span></span></a></div>      <div>
+        <div class="caption">
+          <h4><a href="https://citycenter.jo/computer-hardware/components-cpu-and-processor/amd-ryzen-9-9800x3d-8-core-4-7ghz-5-2-ghz-max-boost-104mb-cache-am5-desktop-processor-tray">AMD RYZEN 7 9800X3D 8-Core 4.7GHz (5.2 GHz Max Boost) 104MB Cache AM5 Desktop Processor , Tray</a></h4>          
+            <div class="description">
+                Harness the ultimate gaming edge with AMD Ryzen 7 9800X3D, Unlock faster gaming with 2nd-gen AMD 3D                 </div>          
+                    <p class="price ">
+                        <span class="price-old"><span class="tb_currency tb_before">JOD</span><span class="tb_integer"> 569</span><span class="tb_decimal_point">.</span><span class="tb_decimal">00</span></span> <span class="price-new"><span class="tb_currency tb_before">JOD</span><span class="tb_integer"> 529</span><span class="tb_decimal_point">.</span><span class="tb_decimal">00</span></span>
+                      </p>                                                </div>
+                
+                
+      </div>
+                </div>
+  </div>    <div class="product-layout clear2">
+    <input class="product-id_13646" type="hidden" value="">
+    <div class="product-thumb">
+      <div class="image"><a href="https://citycenter.jo/computer-hardware/components-cpu-and-processor/intel-new-core-ultra-9-285k-24-cores-up-to-5-7-ghz-l2-l3-76mb-cache-unlocked-w-integrated-graphics-tray"><span style="max-width: 550px;"><span style="padding-top: 72.73%"><img src="https://image.citycenter.jo/cachewebp/catalog/002025/12025/285T912025-550x400.webp" width="550" height="400" alt="Intel NEW Core Ultra 9 285K 24-Cores up to 5.7 GHz L2+L3 76MB Cache Unlocked w/ Integrated Graphics - Tray" style="margin-top: -72.73%"></span></span></a></div>      <div>
+        <div class="caption">
+          <h4><a href="https://citycenter.jo/computer-hardware/components-cpu-and-processor/intel-new-core-ultra-9-285k-24-cores-up-to-5-7-ghz-l2-l3-76mb-cache-unlocked-w-integrated-graphics-tray">Intel NEW Core Ultra 9 285K 24-Cores up to 5.7 GHz L2+L3 76MB Cache Unlocked w/ Integrated Graphics - Tray</a></h4>          
+            <div class="description">
+                24 Cores &amp; 24 Threads3.7 GHz P-Core Clock Speed5.5 GHz Maximum Turbo Boost FrequencyLGA 1851 Socket3                </div>          
+                    <p class="price ">
+                        <span class="price-regular"><span class="tb_currency tb_before">JOD</span><span class="tb_integer"> 569</span><span class="tb_decimal_point">.</span><span class="tb_decimal">00</span></span>
+                      </p>                                                </div>
+                
+                
+      </div>
+                </div>
+  </div>

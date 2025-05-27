@@ -1,0 +1,41 @@
+[
+  {
+    "domain": "citycenter.jo",
+    "expiry": 1748185077,
+    "httpOnly": false,
+    "name": "cf_chl_rc_m",
+    "path": "/",
+    "sameSite": "None",
+    "secure": true,
+    "value": "3"
+  },
+  {
+    "domain": ".citycenter.jo",
+    "expiry": 1750773460,
+    "httpOnly": false,
+    "name": "currency",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "JOD"
+  },
+  {
+    "domain": ".citycenter.jo",
+    "expiry": 1750773460,
+    "httpOnly": false,
+    "name": "language",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "en"
+  },
+  {
+    "domain": "citycenter.jo",
+    "httpOnly": false,
+    "name": "PHPSESSID",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "856db1582489eb0130690d983ff9e325"
+  }
+]
